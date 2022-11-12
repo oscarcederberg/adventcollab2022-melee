@@ -17,15 +17,15 @@ class BootState extends flixel.FlxState
 	override function create()
 	{
 		super.create();
-		
+
 		// Only needs to be called once
 		Controls.init();
 	}
-	
+
 	override function update(elapsed:Float)
 	{
 		super.update(elapsed);
-		
-		Global.switchState(new templatemg.states.MenuState());
+
+		Global.switchState(new melee.states.MenuState());
 	}
 }

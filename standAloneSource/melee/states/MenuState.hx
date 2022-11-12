@@ -1,4 +1,4 @@
-package templatemg.states;
+package melee.states;
 
 import flixel.text.FlxText;
 
@@ -11,10 +11,10 @@ class MenuState extends flixel.FlxState
 	override function create()
 	{
 		super.create();
-		
+
 		// Only needs to be called once
 		Controls.init();
-		
+
 		final info = new FlxText();
 		info.alignment = CENTER;
 		info.text
@@ -25,12 +25,12 @@ class MenuState extends flixel.FlxState
 		Global.screenCenter(info);
 		add(info);
 	}
-	
+
 	override function update(elapsed:Float)
 	{
 		super.update(elapsed);
-		
+
 		if (Controls.justPressed.A)
-			Global.switchState(new templatemg.states.PlayState());
+			Global.switchState(new melee.states.PlayState());
 	}
 }

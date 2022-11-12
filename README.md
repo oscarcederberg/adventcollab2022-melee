@@ -19,7 +19,7 @@ haxelib install newgrounds
 
 
 ## Making your Own
-Copy this template and rename every namespace `templatemg` to whatever unique namespace you've
+Copy this template and rename every namespace `melee` to whatever unique namespace you've
 given your game(Hint: Use Ctrl+Shift+F). This will prevent naming conflicts with the main Advent game, as well as other
 minigames.
 
@@ -45,7 +45,7 @@ To allow your game to work in both stand-alone as well as in Advent, use `Global
 
 Note: The `Global` and `Controls` class are auto imported everywhere, via `import.hx`.
 
-When played via advent, all your asset paths will be renamed to "assets/templatemg/images/myFile.png",
+When played via advent, all your asset paths will be renamed to "assets/melee/images/myFile.png",
 and in stand-alone mode they will be "assets/images/myFile.png", hence why Global.assets in neccesary.
 `AssetPaths.hx` is also not an option.
 

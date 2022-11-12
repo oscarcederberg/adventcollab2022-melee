@@ -1,4 +1,4 @@
-package templatemg.states;
+package melee.states;
 
 import flixel.FlxG;
 import flixel.FlxObject;
@@ -32,7 +32,7 @@ class GameOverState extends FlxState
 	override function update(elapsed:Float)
 	{
 		super.update(elapsed);
-		
+
 		//Code for your GameOverState starts here
 		if (Controls.justPressed.A)
 			//This loops back to your PlayState.hx

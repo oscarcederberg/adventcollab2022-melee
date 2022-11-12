@@ -21,29 +21,29 @@ class Global
 	inline static function get_height() return FlxG.height;
 	public static var state(get, never):FlxState;
 	inline static function get_state() return FlxG.state;
-	
+
 	inline public static function switchState(state:FlxState)
 	{
 		FlxG.switchState(state);
 	}
-	
+
 	static public function resetState()
 	{
 		FlxG.resetState();
 	}
-	
+
 	static public function cancelTweensOf(object, ?fieldPaths)
 	{
 		FlxTween.cancelTweensOf(object, fieldPaths);
 	}
-	
+
 	inline static public function asset(path:String) return path;
-	
+
 	inline static public function screenCenterX(obj:FlxObject)
 	{
 		obj.x = (width - obj.width) / 2;
 	}
-		
+
 	inline static public function screenCenterY(obj:FlxObject)
 	{
 		obj.y = (height - obj.height) / 2;
