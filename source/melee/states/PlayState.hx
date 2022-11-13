@@ -1,13 +1,13 @@
 package melee.states;
 
+import melee.enemies.Enemy;
+import melee.enemies.Devil;
 import flixel.math.FlxRandom;
 import flixel.group.FlxGroup.FlxTypedGroup;
 import flixel.group.FlxSpriteGroup;
 import flixel.FlxG;
 import flixel.text.FlxText;
 import flixel.FlxState;
-
-import melee.enemies.Enemy;
 
 /**
  * PlayState.hx is where Advent will start to access your game,
@@ -35,7 +35,7 @@ class PlayState extends FlxState
 		add(this.enemies);
 		for (i in 0...10)
 		{
-			var enemy = new Enemy(this.random.int(0, Global.width), this.random.int(0, Global.height));
+			var enemy = new Devil(this.random.int(0, Global.width), this.random.int(0, Global.height));
 			this.enemies.add(enemy);
 		}
 	}
