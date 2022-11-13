@@ -1,5 +1,6 @@
 package melee;
 
+import flixel.tweens.misc.NumTween;
 import flixel.tweens.FlxEase;
 import flixel.tweens.FlxTween;
 import flixel.math.FlxPoint;
@@ -75,29 +76,49 @@ class Player extends FlxSprite
 
     public function animate()
     {
+        var wiggleDuration = 0.5;
+        var bounceDuration = 0.25;
+        var wiggleAngle = 20;
+        var bounceLength = 4;
+
         if (this.prevState == Idle)
         {
             if (this.currentState == Walking)
             {
-                var from = this.facing == LEFT ? -20 : 20;
+                var from = this.facing == LEFT ? -wiggleAngle : wiggleAngle;
                 var to = -from;
-                var duration = Math.abs(this.angle) == 0 ? 0.25 : 0.25 * Math.abs(this.angle) / 20;
+
                 FlxTween.cancelTweensOf(this);
-                FlxTween.angle(this, this.angle, to, duration, {
-                    ease: FlxEase.bounceInOut, onComplete: tween -> {
-                            FlxTween.angle(this, to, from, 0.5, {
-                                type: FlxTweenType.PINGPONG, ease: FlxEase.bounceInOut
-                            });
-                        }
+
+                FlxTween.angle(this, this.angle, to, wiggleDuration / 2, {
+                    ease: FlxEase.quadInOut, onComplete: tween -> {
+                        FlxTween.angle(this, to, from, wiggleDuration, {
+                            type: FlxTweenType.PINGPONG, ease: FlxEase.quadInOut
+                        });
+                    }
+                });
+
+                // NOTE: hardcoded offset
+                FlxTween.tween(this, {"offset.y": -8 - bounceLength}, bounceDuration / 2, {
+                    ease: FlxEase.cubeInOut, onComplete: tween -> {
+                        FlxTween.tween(this, {"offset.y": -8 + bounceLength}, bounceDuration, {
+                            type: FlxTweenType.PINGPONG, ease: FlxEase.cubeInOut
+                        });
+                    }
                 });
             }
         } else if (this.prevState == Walking) {
             if (this.currentState == Idle)
             {
-                var duration = Math.abs(this.angle) == 0 ? 0.25 : 0.25 * Math.abs(this.angle) / 20;
                 FlxTween.cancelTweensOf(this);
-                FlxTween.angle(this, this.angle, 0, duration, {
-                    ease: FlxEase.bounceInOut
+
+                FlxTween.angle(this, this.angle, 0, wiggleDuration / 2, {
+                    ease: FlxEase.quadOut
+                });
+
+                // NOTE: hardcoded offset
+                FlxTween.tween(this, {"offset.y": -8}, bounceDuration / 2, {
+                    ease: FlxEase.cubeOut
                 });
             }
         }
