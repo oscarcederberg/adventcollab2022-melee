@@ -51,4 +51,25 @@ class PlayState extends FlxState
 		FlxG.collide(this.enemies, this.enemies);
 		FlxG.collide(this.player, this.enemies);
 	}
+
+	public function getClosestEnemy():Enemy {
+		if (this.enemies.countLiving() <= 0)
+		{
+			return null;
+		}
+
+		var closestEnemy = this.enemies.getFirstAlive();
+		var closestDistance = this.player.getPosition().distanceTo(closestEnemy.getPosition());
+		for (enemy in this.enemies)
+		{
+			var distance = this.player.getPosition().distanceTo(enemy.getPosition());
+			if (distance < closestDistance)
+			{
+				closestEnemy = enemy;
+				closestDistance = distance;
+			}
+		}
+
+		return closestEnemy;
+	}
 }

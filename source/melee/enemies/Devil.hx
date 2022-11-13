@@ -28,10 +28,10 @@ class Devil extends Enemy
 
     public function handleLogic()
     {
-        var playerPosition = parent.player.getPosition();
+        var playerPosition = this.state.player.getPosition();
         var direction = playerPosition.subtractPoint(getPosition()).normalize();
 
-        this.velocity = this.moveSpeed*direction;
+        this.velocity = this.moveSpeed * direction;
         this.prevState = this.currentState;
         this.currentState = Walking;
     }
@@ -42,6 +42,9 @@ class Devil extends Enemy
         var bounceDuration = 0.15;
         var wiggleAngle = 15;
         var bounceLength = 3;
+
+        this.facing = this.velocity.x < 0 ? LEFT : this.facing;
+        this.facing = this.velocity.x > 0 ? RIGHT : this.facing;
 
         if (this.prevState == Idle)
         {

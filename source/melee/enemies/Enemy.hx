@@ -15,7 +15,7 @@ enum EnemyState
 
 abstract class Enemy extends FlxSprite
 {
-    var parent:PlayState;
+    var state:PlayState;
     var currentState:EnemyState;
     var prevState:EnemyState;
 
@@ -23,7 +23,7 @@ abstract class Enemy extends FlxSprite
     {
         super(x, y);
 
-        this.parent = cast (Global.state, PlayState);
+        this.state = cast (Global.state, PlayState);
         this.currentState = Idle;
         this.prevState = Idle;
         this.facing = LEFT;
@@ -31,10 +31,10 @@ abstract class Enemy extends FlxSprite
 
     override public function update(elapsed:Float):Void
 	{
-		handleLogic();
-        animate();
-
 		super.update(elapsed);
+
+        handleLogic();
+        animate();
 	}
 
     public abstract function handleLogic():Void;

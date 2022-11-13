@@ -1,6 +1,6 @@
 package melee;
 
-import flixel.tweens.misc.NumTween;
+import melee.weapons.Weapon;
 import flixel.tweens.FlxEase;
 import flixel.tweens.FlxTween;
 import flixel.math.FlxPoint;
@@ -19,6 +19,7 @@ class Player extends FlxSprite
     var currentState:PlayerState;
     var prevState:PlayerState;
     var moveSpeed:Int;
+    var weapon:Weapon;
 
     public function new(x:Float, y:Float)
     {
@@ -28,6 +29,11 @@ class Player extends FlxSprite
         this.prevState = Idle;
         this.facing = LEFT;
         this.moveSpeed = SPEED_WALK;
+        this.immovable = true;
+
+        var sword = new Weapon(this);
+        this.weapon = sword;
+        Global.state.add(this.weapon);
 
         loadGraphic("assets/images/knose.png", 16, 16);
         setFacingFlip(LEFT, false, false);
@@ -38,10 +44,11 @@ class Player extends FlxSprite
 
     override public function update(elapsed:Float):Void
 	{
-		handleInput();
-        animate();
-
 		super.update(elapsed);
+
+        handleInput();
+        animate();
+        this.weapon.update(elapsed);
 	}
 
     public function handleInput()
