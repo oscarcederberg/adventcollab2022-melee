@@ -1,12 +1,11 @@
 package melee.states;
 
+import melee.weapons.Weapon;
 import melee.enemies.Enemy;
 import melee.enemies.Devil;
 import flixel.math.FlxRandom;
 import flixel.group.FlxGroup.FlxTypedGroup;
-import flixel.group.FlxSpriteGroup;
 import flixel.FlxG;
-import flixel.text.FlxText;
 import flixel.FlxState;
 
 /**
@@ -46,6 +45,11 @@ class PlayState extends FlxState
 		super.update(elapsed);
 
 		this.player.update(elapsed);
+
+		FlxG.overlap(this.player.weaponManager.attacks, this.enemies, (attack:Weapon, enemy:Enemy) -> {
+			enemy.hit(attack);
+		});
+
 		this.enemies.update(elapsed);
 
 		FlxG.collide(this.enemies, this.enemies);

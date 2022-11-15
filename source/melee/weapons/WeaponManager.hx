@@ -1,12 +1,14 @@
 package melee.weapons;
 
+import flixel.FlxG;
 import flixel.FlxObject;
 import flixel.group.FlxGroup.FlxTypedGroup;
 import flixel.util.FlxTimer;
 
 class WeaponManager {
+    public var attacks:FlxTypedGroup<Weapon>;
+
     var parent:Player;
-    var attacks:FlxTypedGroup<Weapon>;
     var attackFreq:Float;
     var attackTimer:FlxTimer;
 
@@ -21,7 +23,8 @@ class WeaponManager {
         Global.state.add(attacks);
     }
 
-    public function update(elapsed:Float) {
+    public function update(elapsed:Float)
+    {
         this.attacks.update(elapsed);
     }
 

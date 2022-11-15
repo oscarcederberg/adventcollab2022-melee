@@ -7,9 +7,10 @@ import melee.enemies.Enemy;
 import flixel.FlxSprite;
 
 class Weapon extends FlxSprite {
+    public var direction:FlxPoint;
+
     var state:PlayState;
     var parent:Player;
-    var direction:FlxPoint;
     var lifetime:Float;
 
     public function new(parent:Player)
@@ -27,7 +28,8 @@ class Weapon extends FlxSprite {
         new FlxTimer().start(lifetime, _ -> kill());
     }
 
-    override function update(elapsed:Float) {
+    override function update(elapsed:Float)
+    {
         super.update(elapsed);
 
         var position = this.parent.getMidpoint().addPoint(16 * direction).addPoint(this.offset);

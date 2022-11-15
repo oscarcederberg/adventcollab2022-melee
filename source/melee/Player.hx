@@ -17,10 +17,11 @@ class Player extends FlxSprite
 {
     public static inline final SPEED_WALK:Int = 24;
 
+    public var weaponManager:WeaponManager;
+
     var currentState:PlayerState;
     var prevState:PlayerState;
     var moveSpeed:Int;
-    var weaponManager:WeaponManager;
 
     public function new(x:Float, y:Float)
     {
