@@ -8,6 +8,7 @@ import flixel.FlxSprite;
 
 class Weapon extends FlxSprite {
     public var direction:FlxPoint;
+    public var damage:Float;
 
     var state:PlayState;
     var parent:Player;
@@ -17,9 +18,12 @@ class Weapon extends FlxSprite {
     {
         super(0, 0);
 
+        this.damage = 3;
+
         this.state = cast (Global.state, PlayState);
         this.parent = parent;
         this.lifetime = 0.4;
+
         loadGraphic("assets/images/weapons/sword/slash.png", 4, 8);
         setGraphicSize(2 * 4, 2 * 8);
         updateHitbox();

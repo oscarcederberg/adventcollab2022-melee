@@ -1,5 +1,6 @@
 package melee.enemies;
 
+import flixel.util.FlxColor;
 import flixel.effects.FlxFlicker;
 import flixel.util.FlxTimer;
 import melee.weapons.Weapon;
@@ -19,6 +20,9 @@ enum EnemyState
 
 abstract class Enemy extends FlxSprite
 {
+    public var currentState:EnemyState;
+    public var prevState:EnemyState;
+
     var moveSpeed:Float;
     var wiggleDuration:Float;
     var bounceDuration:Float;
@@ -26,8 +30,6 @@ abstract class Enemy extends FlxSprite
     var bounceLength:Float;
 
     var state:PlayState;
-    var currentState:EnemyState;
-    var prevState:EnemyState;
 
     public function new(x:Float, y:Float)
     {
@@ -44,26 +46,37 @@ abstract class Enemy extends FlxSprite
 		super.update(elapsed);
 
         handleLogic();
-        animate();
 	}
 
     public function hit(weapon:Weapon)
     {
-        this.prevState = this.currentState;
-        this.currentState = Hit;
-
+        this.health -= weapon.damage;
         this.velocity = 48 * weapon.direction;
         this.acceleration = -16 * weapon.direction;
-        new FlxTimer().start(0.75, recover);
+        this.color = FlxColor.RED;
+
+        new FlxTimer().start(0.75, _ -> {
+            if (this.health <= 0)
+                kill();
+            else
+                recover();
+        });
         FlxFlicker.flicker(this, 0.75);
+
+        this.prevState = this.currentState;
+        this.currentState = Hit;
+        animate(Walking, Hit);
     }
 
-    public function recover(timer:FlxTimer)
+    public function recover()
     {
-        this.prevState = this.currentState;
-        this.currentState = Walking;
         this.velocity.set(0, 0);
         this.acceleration.set(0, 0);
+        this.color = FlxColor.WHITE;
+
+        this.prevState = Hit;
+        this.currentState = Walking;
+        animate(Hit, Walking);
     }
 
     public function handleLogic()
@@ -76,18 +89,22 @@ abstract class Enemy extends FlxSprite
         var direction = playerPosition.subtractPoint(getPosition()).normalize();
 
         this.velocity = this.moveSpeed * direction;
+
         this.prevState = this.currentState;
         this.currentState = Walking;
+        animate(this.prevState, this.currentState);
     }
 
-    public function animate() {
-
-        this.facing = this.velocity.x < 0 ? LEFT : this.facing;
-        this.facing = this.velocity.x > 0 ? RIGHT : this.facing;
-
-        if (this.prevState == Idle)
+    public function animate(prev:EnemyState, current:EnemyState) {
+        if (current == Walking)
         {
-            if (this.currentState == Walking)
+            this.facing = this.velocity.x < 0 ? LEFT : this.facing;
+            this.facing = this.velocity.x > 0 ? RIGHT : this.facing;
+        }
+
+        if (prev == Idle || prev == Hit)
+        {
+            if (current == Walking)
             {
                 var from = this.facing == LEFT ? -wiggleAngle : wiggleAngle;
                 var to = -from;
@@ -111,8 +128,8 @@ abstract class Enemy extends FlxSprite
                     }
                 });
             }
-        } else if (this.prevState == Walking) {
-            if (this.currentState == Idle)
+        } else if (prev == Walking) {
+            if (current == Idle)
             {
                 FlxTween.cancelTweensOf(this);
 
@@ -123,6 +140,21 @@ abstract class Enemy extends FlxSprite
                 // NOTE: hardcoded offset
                 FlxTween.tween(this, {"offset.y": -8}, bounceDuration / 2, {
                     ease: FlxEase.cubeOut
+                });
+            }
+            else if (current == Hit)
+            {
+                var to = this.facing == LEFT ? -2 * wiggleAngle : 2 * wiggleAngle;
+                if (this.health <= 0) to = 2 * to;
+
+                FlxTween.cancelTweensOf(this);
+
+                FlxTween.angle(this, this.angle, to, wiggleDuration, {
+                    ease: FlxEase.quadInOut, onComplete: tween -> {
+                        if (health > 0) FlxTween.angle(this, to, 0, wiggleDuration, {
+                            ease: FlxEase.quadInOut
+                        });
+                    }
                 });
             }
         }
