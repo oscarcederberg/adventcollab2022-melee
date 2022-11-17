@@ -44,21 +44,27 @@ class PlayState extends FlxState
 	override function update(elapsed:Float)
 	{
 		super.update(elapsed);
-
 		this.player.update(elapsed);
+		this.enemies.update(elapsed);
 
 		FlxG.overlap(this.player.weaponManager.attacks, this.enemies, (attack:Weapon, enemy:Enemy) -> {
 			if (enemy.currentState != Hit) enemy.hit(attack);
 		});
-
-		this.enemies.update(elapsed);
 
 		FlxG.overlap(this.enemies, this.enemies, (enemy:Enemy, other:Enemy) -> {
 			FlxObject.separate(enemy, other);
 		}, (enemy:Enemy, other:Enemy) -> {
 			return (enemy.currentState != Hit && other.currentState != Hit);
 		});
-		FlxG.collide(this.player, this.enemies);
+
+		FlxG.overlap(this.player, this.enemies, (player:Player, other:Enemy) -> {
+			if (!player.invincible && other.currentState != Hit) {
+				player.hit(other.damage);
+				FlxObject.separate(player, other);
+			} else if (other.currentState != Hit) {
+				FlxObject.separate(player, other);
+			}
+		});
 	}
 
 	public function getClosestEnemy():Enemy {

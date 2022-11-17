@@ -1,6 +1,8 @@
 package melee;
 
-import melee.weapons.Weapon;
+import flixel.util.FlxTimer;
+import flixel.effects.FlxFlicker;
+import flixel.util.FlxColor;
 import melee.weapons.WeaponManager;
 import flixel.tweens.FlxEase;
 import flixel.tweens.FlxTween;
@@ -17,23 +19,26 @@ class Player extends FlxSprite
 {
     public static inline final SPEED_WALK:Int = 24;
 
+    public var currentState:PlayerState;
+    public var prevState:PlayerState;
+    public var invincible:Bool;
     public var weaponManager:WeaponManager;
 
-    var currentState:PlayerState;
-    var prevState:PlayerState;
     var moveSpeed:Int;
 
     public function new(x:Float, y:Float)
     {
         super(x, y);
 
+        this.health = 100;
         this.currentState = Idle;
         this.prevState = Idle;
-        this.facing = LEFT;
-        this.moveSpeed = SPEED_WALK;
-        this.immovable = true;
-
+        this.invincible = false;
         this.weaponManager = new WeaponManager(this);
+        this.moveSpeed = SPEED_WALK;
+
+        this.facing = LEFT;
+        this.immovable = true;
 
         loadGraphic("assets/images/knose.png", 16, 16);
         setFacingFlip(LEFT, false, false);
@@ -45,11 +50,27 @@ class Player extends FlxSprite
     override public function update(elapsed:Float):Void
 	{
 		super.update(elapsed);
+        this.weaponManager.update(elapsed);
 
         handleInput();
-        animate();
-        this.weaponManager.update(elapsed);
+        animate(this.prevState, this.currentState);
 	}
+
+    public function hit(damage:Float)
+    {
+        this.health -= damage;
+
+        new FlxTimer().start(0.75, _ -> {
+                recover();
+        });
+        FlxFlicker.flicker(this, 0.75);
+        this.invincible = true;
+    }
+
+    public function recover()
+    {
+        this.invincible = false;
+    }
 
     public function handleInput()
     {
@@ -57,7 +78,6 @@ class Player extends FlxSprite
 		var _down:Bool = Controls.pressed.DOWN;
 		var _left:Bool = Controls.pressed.LEFT;
 		var _right:Bool = Controls.pressed.RIGHT;
-		var _action:Bool = Controls.pressed.A;
 
 		if (_up && _down)
 		{
@@ -81,16 +101,16 @@ class Player extends FlxSprite
         this.currentState = (dx != 0 || dy != 0) ? Walking : Idle;
     }
 
-    public function animate()
+    public function animate(prev:PlayerState, current:PlayerState)
     {
         var wiggleDuration = 0.5;
         var bounceDuration = 0.25;
         var wiggleAngle = 20;
         var bounceLength = 4;
 
-        if (this.prevState == Idle)
+        if (prev == Idle)
         {
-            if (this.currentState == Walking)
+            if (current == Walking)
             {
                 var from = this.facing == LEFT ? -wiggleAngle : wiggleAngle;
                 var to = -from;
@@ -114,8 +134,8 @@ class Player extends FlxSprite
                     }
                 });
             }
-        } else if (this.prevState == Walking) {
-            if (this.currentState == Idle)
+        } else if (prev == Walking) {
+            if (current == Idle)
             {
                 FlxTween.cancelTweensOf(this);
 

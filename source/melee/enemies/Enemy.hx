@@ -22,6 +22,7 @@ abstract class Enemy extends FlxSprite
 {
     public var currentState:EnemyState;
     public var prevState:EnemyState;
+    public var damage:Float;
 
     var moveSpeed:Float;
     var wiggleDuration:Float;
@@ -46,6 +47,7 @@ abstract class Enemy extends FlxSprite
 		super.update(elapsed);
 
         handleLogic();
+        animate(this.prevState, this.currentState);
 	}
 
     public function hit(weapon:Weapon)
@@ -92,7 +94,6 @@ abstract class Enemy extends FlxSprite
 
         this.prevState = this.currentState;
         this.currentState = Walking;
-        animate(this.prevState, this.currentState);
     }
 
     public function animate(prev:EnemyState, current:EnemyState) {

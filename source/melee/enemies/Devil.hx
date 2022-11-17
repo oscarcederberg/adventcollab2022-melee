@@ -10,6 +10,7 @@ class Devil extends Enemy
         super(x, y);
 
         this.health = 10;
+        this.damage = 5;
         this.moveSpeed = 16;
         this.wiggleDuration = 0.3;
         this.bounceDuration = 0.15;
