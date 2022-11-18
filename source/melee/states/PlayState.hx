@@ -1,5 +1,6 @@
 package melee.states;
 
+import melee.enemies.EnemyManager;
 import flixel.FlxObject;
 import melee.weapons.Weapon;
 import melee.enemies.Enemy;
@@ -17,7 +18,7 @@ class PlayState extends FlxState
 {
 	//Initialize Variables Here
 	public var player:Player;
-	public var enemies:FlxTypedGroup<Enemy>;
+	public var enemyManager:EnemyManager;
 	public var random:FlxRandom;
 
 	//This is the Start function
@@ -31,13 +32,8 @@ class PlayState extends FlxState
 		Global.screenCenter(player);
 		add(player);
 
-		this.enemies = new FlxTypedGroup();
-		add(this.enemies);
-		for (i in 0...10)
-		{
-			var enemy = new Devil(this.random.int(0, Global.width), this.random.int(0, Global.height));
-			this.enemies.add(enemy);
-		}
+		this.enemyManager = new EnemyManager(this);
+		add(this.enemyManager.enemies);
 	}
 
 	/** This is where your game updates each frame */
@@ -45,19 +41,19 @@ class PlayState extends FlxState
 	{
 		super.update(elapsed);
 		this.player.update(elapsed);
-		this.enemies.update(elapsed);
+		this.enemyManager.update(elapsed);
 
-		FlxG.overlap(this.player.weaponManager.attacks, this.enemies, (attack:Weapon, enemy:Enemy) -> {
+		FlxG.overlap(this.player.weaponManager.attacks, this.enemyManager.enemies, (attack:Weapon, enemy:Enemy) -> {
 			if (enemy.currentState != Hit) enemy.hit(attack);
 		});
 
-		FlxG.overlap(this.enemies, this.enemies, (enemy:Enemy, other:Enemy) -> {
+		FlxG.overlap(this.enemyManager.enemies, this.enemyManager.enemies, (enemy:Enemy, other:Enemy) -> {
 			FlxObject.separate(enemy, other);
 		}, (enemy:Enemy, other:Enemy) -> {
 			return (enemy.currentState != Hit && other.currentState != Hit);
 		});
 
-		FlxG.overlap(this.player, this.enemies, (player:Player, other:Enemy) -> {
+		FlxG.overlap(this.player, this.enemyManager.enemies, (player:Player, other:Enemy) -> {
 			if (!player.invincible && other.currentState != Hit) {
 				player.hit(other.damage);
 				FlxObject.separate(player, other);
@@ -68,23 +64,6 @@ class PlayState extends FlxState
 	}
 
 	public function getClosestEnemy():Enemy {
-		if (this.enemies.countLiving() <= 0)
-		{
-			return null;
-		}
-
-		var closestEnemy = this.enemies.getFirstAlive();
-		var closestDistance = this.player.getPosition().distanceTo(closestEnemy.getPosition());
-		for (enemy in this.enemies)
-		{
-			var distance = this.player.getPosition().distanceTo(enemy.getPosition());
-			if (distance < closestDistance)
-			{
-				closestEnemy = enemy;
-				closestDistance = distance;
-			}
-		}
-
-		return closestEnemy;
+			return this.enemyManager.getClosestEnemy(player.getPosition());
 	}
 }
