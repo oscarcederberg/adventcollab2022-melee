@@ -31,6 +31,7 @@ class PlayState extends FlxState
 		this.player = new Player(0, 0);
 		Global.screenCenter(player);
 		add(player);
+		add(player.healthBar);
 
 		this.enemyManager = new EnemyManager(this);
 		add(this.enemyManager.enemies);

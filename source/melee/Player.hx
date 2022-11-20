@@ -1,8 +1,10 @@
 package melee;
 
+import flixel.util.FlxColor;
+import flixel.ui.FlxBar;
+import flixel.ui.FlxBar;
 import flixel.util.FlxTimer;
 import flixel.effects.FlxFlicker;
-import flixel.util.FlxColor;
 import melee.weapons.WeaponManager;
 import flixel.tweens.FlxEase;
 import flixel.tweens.FlxTween;
@@ -17,28 +19,39 @@ enum PlayerState
 
 class Player extends FlxSprite
 {
-    public static inline final SPEED_WALK:Int = 24;
+    public static inline final SPEED_WALK:Float = 24;
 
     public var currentState:PlayerState;
     public var prevState:PlayerState;
     public var invincible:Bool;
     public var weaponManager:WeaponManager;
 
-    var moveSpeed:Int;
+    var maxHealth:Float;
+    var moveSpeed:Float;
+
+    public var healthBar:FlxBar;
+    //var showBar:Bool;
+    //var barTimer:FlxTimer;
 
     public function new(x:Float, y:Float)
     {
         super(x, y);
 
-        this.health = 100;
+        this.maxHealth = 100;
+        this.health = this.maxHealth;
         this.currentState = Idle;
         this.prevState = Idle;
         this.invincible = false;
         this.weaponManager = new WeaponManager(this);
-        this.moveSpeed = SPEED_WALK;
 
+        this.moveSpeed = SPEED_WALK;
         this.facing = LEFT;
         this.immovable = true;
+
+        this.healthBar = new FlxBar(this.x, this.y + 40, LEFT_TO_RIGHT, 32, 4, this, "health");
+        this.healthBar.createFilledBar(FlxColor.BLACK, FlxColor.RED);
+        // this.showBar = false;
+        // this.barTimer = new FlxTimer();
 
         loadGraphic("assets/images/knose.png", 16, 16);
         setFacingFlip(LEFT, false, false);
@@ -51,6 +64,21 @@ class Player extends FlxSprite
 	{
 		super.update(elapsed);
         this.weaponManager.update(elapsed);
+        this.healthBar.setPosition(this.x, this.y + 40);
+        this.healthBar.update(elapsed);
+
+        // if (this.health < this.maxHealth)
+        // {
+        //     this.showBar = true;
+        // }
+        // if (this.health == this.maxHealth && !this.barTimer.active)
+        // {
+        //     this.barTimer.start(4, _ -> {
+        //         if (this.health == this.maxHealth) {
+        //             this.showBar = false;
+        //         }
+        //     });
+        // }
 
         handleInput();
         animate(this.prevState, this.currentState);
@@ -59,6 +87,7 @@ class Player extends FlxSprite
     public function hit(damage:Float)
     {
         this.health -= damage;
+        // this.showBar = true;
 
         new FlxTimer().start(0.75, _ -> {
                 recover();

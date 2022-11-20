@@ -36,7 +36,7 @@ class Weapon extends FlxSprite {
     {
         super.update(elapsed);
 
-        var position = this.parent.getMidpoint().addPoint(16 * direction).addPoint(this.offset);
+        var position = this.parent.getMidpoint().addPoint(32 * direction).addPoint(this.offset);
         this.setPosition(position.x, position.y);
     }
 
@@ -54,7 +54,7 @@ class Weapon extends FlxSprite {
         }
         this.angle = new FlxPoint().degreesTo(direction) + 90;
 
-        var position = this.parent.getMidpoint().addPoint(16 * direction).addPoint(this.offset);
+        var position = this.parent.getMidpoint().addPoint(32 * direction).addPoint(this.offset);
         this.setPosition(position.x, position.y);
     }
 }
