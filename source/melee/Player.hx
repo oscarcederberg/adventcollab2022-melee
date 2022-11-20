@@ -30,8 +30,8 @@ class Player extends FlxSprite
     var moveSpeed:Float;
 
     public var healthBar:FlxBar;
-    //var showBar:Bool;
-    //var barTimer:FlxTimer;
+    var showBar:Bool;
+    var barTimer:FlxTimer;
 
     public function new(x:Float, y:Float)
     {
@@ -50,8 +50,8 @@ class Player extends FlxSprite
 
         this.healthBar = new FlxBar(this.x, this.y + 40, LEFT_TO_RIGHT, 32, 4, this, "health");
         this.healthBar.createFilledBar(FlxColor.BLACK, FlxColor.RED);
-        // this.showBar = false;
-        // this.barTimer = new FlxTimer();
+        this.showBar = false;
+        this.barTimer = new FlxTimer();
 
         loadGraphic("assets/images/knose.png", 16, 16);
         setFacingFlip(LEFT, false, false);
@@ -64,21 +64,8 @@ class Player extends FlxSprite
 	{
 		super.update(elapsed);
         this.weaponManager.update(elapsed);
-        this.healthBar.setPosition(this.x, this.y + 40);
+        handleHealthBar();
         this.healthBar.update(elapsed);
-
-        // if (this.health < this.maxHealth)
-        // {
-        //     this.showBar = true;
-        // }
-        // if (this.health == this.maxHealth && !this.barTimer.active)
-        // {
-        //     this.barTimer.start(4, _ -> {
-        //         if (this.health == this.maxHealth) {
-        //             this.showBar = false;
-        //         }
-        //     });
-        // }
 
         handleInput();
         animate(this.prevState, this.currentState);
@@ -87,8 +74,6 @@ class Player extends FlxSprite
     public function hit(damage:Float)
     {
         this.health -= damage;
-        // this.showBar = true;
-
         new FlxTimer().start(0.75, _ -> {
                 recover();
         });
@@ -99,6 +84,26 @@ class Player extends FlxSprite
     public function recover()
     {
         this.invincible = false;
+    }
+
+    public function handleHealthBar()
+    {
+        this.healthBar.setPosition(this.x, this.y + 40);
+
+        if (this.health < this.maxHealth)
+        {
+            this.showBar = true;
+        }
+        else if (this.health == this.maxHealth && !this.barTimer.active)
+        {
+            this.barTimer.start(4, _ -> {
+                if (this.health == this.maxHealth) {
+                    this.showBar = false;
+                }
+            });
+        }
+
+        this.healthBar.visible = this.showBar;
     }
 
     public function handleInput()
