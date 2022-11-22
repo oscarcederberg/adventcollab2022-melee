@@ -1,5 +1,6 @@
 package melee.states;
 
+import flixel.FlxCamera;
 import melee.enemies.EnemyManager;
 import flixel.FlxObject;
 import melee.weapons.Weapon;
@@ -35,6 +36,8 @@ class PlayState extends FlxState
 
 		this.enemyManager = new EnemyManager(this);
 		add(this.enemyManager.enemies);
+
+		FlxG.camera.follow(player, TOPDOWN_TIGHT, 0.2);
 	}
 
 	/** This is where your game updates each frame */
@@ -43,6 +46,11 @@ class PlayState extends FlxState
 		super.update(elapsed);
 		this.player.update(elapsed);
 		this.enemyManager.update(elapsed);
+		FlxG.worldBounds.set(
+			FlxG.camera.scroll.x - FlxG.camera.width / 2,
+			FlxG.camera.scroll.y - FlxG.camera.height / 2,
+			2 * FlxG.camera.width,
+			2 * FlxG.camera.height);
 
 		FlxG.overlap(this.player.weaponManager.attacks, this.enemyManager.enemies, (attack:Weapon, enemy:Enemy) -> {
 			if (enemy.currentState != Hit) enemy.hit(attack);
