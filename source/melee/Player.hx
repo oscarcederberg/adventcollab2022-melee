@@ -53,10 +53,10 @@ class Player extends FlxSprite
         this.showBar = false;
         this.barTimer = new FlxTimer();
 
-        loadGraphic("assets/images/knose.png", 16, 16);
+        loadGraphic("assets/images/knose.png");
         setFacingFlip(LEFT, false, false);
 		setFacingFlip(RIGHT, true, false);
-        setGraphicSize(2 * 16, 2 * 16);
+        setGraphicSize(2 * Std.int(this.width), 2 * Std.int(this.height));
         updateHitbox();
     }
 

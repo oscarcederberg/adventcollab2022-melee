@@ -24,8 +24,8 @@ class Weapon extends FlxSprite {
         this.parent = parent;
         this.lifetime = 0.4;
 
-        loadGraphic("assets/images/weapons/sword/slash.png", 4, 8);
-        setGraphicSize(2 * 4, 2 * 8);
+        loadGraphic("assets/images/weapons/sword/slash.png");
+        setGraphicSize(2 * Std.int(this.width), 2 * Std.int(this.height));
         updateHitbox();
 
         attack();

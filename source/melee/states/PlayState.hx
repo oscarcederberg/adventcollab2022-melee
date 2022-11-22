@@ -1,11 +1,11 @@
 package melee.states;
 
-import flixel.FlxCamera;
+import flixel.group.FlxSpriteGroup.FlxTypedSpriteGroup;
+import melee.items.*;
 import melee.enemies.EnemyManager;
 import flixel.FlxObject;
 import melee.weapons.Weapon;
 import melee.enemies.Enemy;
-import melee.enemies.Devil;
 import flixel.math.FlxRandom;
 import flixel.group.FlxGroup.FlxTypedGroup;
 import flixel.FlxG;
@@ -20,6 +20,7 @@ class PlayState extends FlxState
 	//Initialize Variables Here
 	public var player:Player;
 	public var enemyManager:EnemyManager;
+	public var items:FlxTypedGroup<Item>;
 	public var random:FlxRandom;
 
 	//This is the Start function
@@ -28,14 +29,15 @@ class PlayState extends FlxState
 		super.create();
 
 		this.random = new FlxRandom();
-
 		this.player = new Player(0, 0);
 		Global.screenCenter(player);
+		this.enemyManager = new EnemyManager(this);
+		this.items = new FlxTypedGroup<Item>();
+
 		add(player);
 		add(player.healthBar);
-
-		this.enemyManager = new EnemyManager(this);
-		add(this.enemyManager.enemies);
+		add(enemyManager.enemies);
+		add(items);
 
 		FlxG.camera.follow(player, TOPDOWN_TIGHT, 0.2);
 	}
@@ -72,7 +74,19 @@ class PlayState extends FlxState
 		});
 	}
 
-	public function getClosestEnemy():Enemy {
-			return this.enemyManager.getClosestEnemy(player.getPosition());
+	public function getClosestEnemy():Enemy
+	{
+		return this.enemyManager.getClosestEnemy(player.getPosition());
+	}
+
+	public function spawnItem(x:Float, y:Float, itemString:String)
+	{
+		var item;
+		switch (itemString.toLowerCase())
+		{
+			case "steak": item = new Steak(x, y);
+			default: return;
+		}
+		this.items.add(item);
 	}
 }

@@ -52,7 +52,7 @@ class EnemyManager {
         var enemy:Enemy;
 
         switch (enemyType.toLowerCase()) {
-            case "devil": enemy = new Devil(position.x, position.y);
+            case "devil": enemy = new Devil(position.x, position.y, "steak");
             default: return;
         }
 
