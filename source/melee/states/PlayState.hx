@@ -34,10 +34,11 @@ class PlayState extends FlxState
 		this.enemyManager = new EnemyManager(this);
 		this.items = new FlxTypedGroup<Item>();
 
-		add(player);
-		add(player.healthBar);
-		add(enemyManager.enemies);
 		add(items);
+		add(enemyManager.enemies);
+		add(player);
+		add(player.weaponManager.attacks);
+		add(player.healthBar);
 
 		FlxG.camera.follow(player, TOPDOWN_TIGHT, 0.2);
 	}

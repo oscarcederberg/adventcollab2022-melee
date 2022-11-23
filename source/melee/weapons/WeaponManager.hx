@@ -19,8 +19,6 @@ class WeaponManager {
         this.attackFreq = 1;
         this.attackTimer = new FlxTimer();
         this.attackTimer.start(1 / this.attackFreq, beginAttack, 0);
-
-        Global.state.add(attacks);
     }
 
     public function update(elapsed:Float)
