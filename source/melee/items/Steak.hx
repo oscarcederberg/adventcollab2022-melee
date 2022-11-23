@@ -13,6 +13,8 @@ class Steak extends Item
 
     public function interact(player:Player)
     {
-        return;
+        player.health += 0.1* player.maxHealth;
+        player.health = Math.min(player.health, player.maxHealth);
+        kill();
     }
 }

@@ -26,8 +26,8 @@ class Player extends FlxSprite
     public var invincible:Bool;
     public var weaponManager:WeaponManager;
 
-    var maxHealth:Float;
-    var moveSpeed:Float;
+    public var maxHealth:Float;
+    public var moveSpeed:Float;
 
     public var healthBar:FlxBar;
     var showBar:Bool;

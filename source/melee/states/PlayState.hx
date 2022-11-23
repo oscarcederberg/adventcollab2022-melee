@@ -55,6 +55,10 @@ class PlayState extends FlxState
 			2 * FlxG.camera.width,
 			2 * FlxG.camera.height);
 
+		FlxG.overlap(this.items, this.player, (item:Item, player:Player) -> {
+			item.interact(player);
+		});
+
 		FlxG.overlap(this.player.weaponManager.attacks, this.enemyManager.enemies, (attack:Weapon, enemy:Enemy) -> {
 			if (enemy.currentState != Hit) enemy.hit(attack);
 		});
