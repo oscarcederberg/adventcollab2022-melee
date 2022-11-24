@@ -67,15 +67,14 @@ class EnemyManager {
 
 		var closestEnemy = this.enemies.getFirstAlive();
 		var closestDistance = position.distanceTo(closestEnemy.getPosition());
-		for (enemy in this.enemies)
-		{
+		this.enemies.forEachAlive(enemy -> {
 			var distance = position.distanceTo(enemy.getPosition());
 			if (distance < closestDistance)
 			{
 				closestEnemy = enemy;
 				closestDistance = distance;
 			}
-		}
+		});
 
 		return closestEnemy;
 	}
