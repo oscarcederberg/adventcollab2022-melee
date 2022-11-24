@@ -1,5 +1,7 @@
 package melee.weapons;
 
+import flixel.tweens.FlxTween;
+import flixel.tweens.FlxEase;
 import flixel.util.FlxTimer;
 import flixel.math.FlxPoint;
 import melee.states.PlayState;
@@ -13,6 +15,8 @@ class Weapon extends FlxSprite {
     var state:PlayState;
     var parent:Player;
     var lifetime:Float;
+    var startDirection:FlxPoint;
+    var rotation:Float;
 
     public function new(parent:Player)
     {
@@ -22,7 +26,8 @@ class Weapon extends FlxSprite {
 
         this.state = cast (Global.state, PlayState);
         this.parent = parent;
-        this.lifetime = 0.4;
+        this.lifetime = 0.6;
+        this.rotation = 45;
 
         loadGraphic("assets/images/weapons/sword/slash.png");
         setGraphicSize(2 * Std.int(this.width), 2 * Std.int(this.height));
@@ -36,6 +41,9 @@ class Weapon extends FlxSprite {
     {
         super.update(elapsed);
 
+        this.direction.set(startDirection.x, startDirection.y);
+        this.direction.rotateByDegrees(this.rotation);
+        this.angle = new FlxPoint().degreesTo(direction);
         var position = this.parent.getMidpoint().addPoint(32 * direction).addPoint(this.offset);
         this.setPosition(position.x, position.y);
     }
@@ -46,15 +54,21 @@ class Weapon extends FlxSprite {
 
         if (enemy != null)
         {
-            this.direction = enemy.getPosition().subtractPoint(this.parent.getPosition()).normalize();
+            this.startDirection = enemy.getPosition().subtractPoint(parent.getPosition()).normalize();
         }
         else
         {
-            this.direction = this.parent.facing == LEFT ? new FlxPoint(-1, 0) : new FlxPoint(1, 0);
+            this.startDirection = parent.facing == LEFT ? new FlxPoint(-1, 0) : new FlxPoint(1, 0);
         }
-        this.angle = new FlxPoint().degreesTo(direction) + 90;
+        this.direction = new FlxPoint(startDirection.x, startDirection.y);
+        this.direction.rotateByDegrees(this.rotation);
+        this.angle = new FlxPoint().degreesTo(direction);
+        new FlxTimer().start(0.1, _ -> FlxTween.tween(this, {"rotation": -45}, lifetime - 0.2, {
+                ease: FlxEase.backInOut
+            })
+        );
 
-        var position = this.parent.getMidpoint().addPoint(32 * direction).addPoint(this.offset);
+        var position = this.parent.getMidpoint().addPoint(32 * direction).addPoint(offset);
         this.setPosition(position.x, position.y);
     }
 }
