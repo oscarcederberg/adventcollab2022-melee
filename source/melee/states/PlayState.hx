@@ -1,6 +1,8 @@
 package melee.states;
 
-import flixel.group.FlxSpriteGroup.FlxTypedSpriteGroup;
+import flixel.util.FlxStringUtil;
+import flixel.text.FlxText;
+import flixel.util.FlxTimer;
 import melee.items.*;
 import melee.enemies.EnemyManager;
 import flixel.FlxObject;
@@ -22,6 +24,10 @@ class PlayState extends FlxState {
 	public var items:FlxTypedGroup<Item>;
 	public var random:FlxRandom;
 
+	var time:Float;
+	var timerText:FlxText;
+	var tick:Float = 0;
+
 	// This is the Start function
 	override function create() {
 		super.create();
@@ -31,12 +37,19 @@ class PlayState extends FlxState {
 		Global.screenCenter(player);
 		this.enemyManager = new EnemyManager(this);
 		this.items = new FlxTypedGroup<Item>();
+		this.time = 30 * 60;
+		this.timerText = new FlxText(0, 0, 0, "30:00", 16);
+		this.timerText.autoSize = false;
+		this.timerText.alignment = CENTER;
+		Global.screenCenterX(this.timerText);
+		this.timerText.scrollFactor.set(0, 0);
 
 		add(items);
 		add(enemyManager.enemies);
 		add(player);
 		add(player.weaponManager.attacks);
 		add(player.healthBar);
+		add(timerText);
 
 		FlxG.camera.follow(player, TOPDOWN_TIGHT, 0.2);
 	}
@@ -72,6 +85,8 @@ class PlayState extends FlxState {
 				FlxObject.separate(player, other);
 			}
 		});
+
+		this.timerText.text = FlxStringUtil.formatTime(tick += elapsed);
 	}
 
 	public function getClosestEnemy():Enemy {
