@@ -9,45 +9,51 @@ class EnemyManager {
 	public var enemies:FlxTypedGroup<Enemy>;
 
 	var parent:PlayState;
-	var maxSize:Int;
-	var spawnRate:Float;
+	var spawnInfos:List<SpawnInfo>;
 
 	public function new(parent:PlayState) {
 		this.parent = parent;
-		this.maxSize = 15;
-		this.spawnRate = 2;
+		this.spawnInfos = new List();
 
 		this.enemies = new FlxTypedGroup();
 
-		for (i in 0...10) {
-			spawnEnemy("devil");
-		}
-
-		new FlxTimer().start(1 / spawnRate, attemptSpawnEnemy, 0);
+		this.spawnInfos.add(new SpawnInfo("devil", 2, SCATTERED, 0, 60, 15));
 	}
 
 	public function update(elapsed:Float) {
 		this.enemies.update(elapsed);
+
+		for (info in this.spawnInfos) {
+			if (!info.active && info.isTime(parent.tick)) {
+				info.active = true;
+				info.timer.start(1 / info.freq, _ -> attemptSpawnEnemy(info), 0);
+			} else if (info.active && !info.isTime(parent.tick)) {
+				info.active = false;
+				info.timer.cancel();
+			}
+		}
 	}
 
-	public function attemptSpawnEnemy(timer:FlxTimer) {
-		if (this.enemies.countLiving() > maxSize) {
+	public function attemptSpawnEnemy(info:SpawnInfo) {
+		if (info.count > info.max) {
 			return;
 		}
 
-		spawnEnemy("Devil");
+		info.count++;
+
+		spawnEnemy(info);
 	}
 
-	public function spawnEnemy(enemyType:String) {
+	public function spawnEnemy(info:SpawnInfo) {
 		var length = parent.random.float(300, 400);
-		var angle = parent.random.float(0, 360, [360]);
+		var angle = parent.random.float(0, 360);
 		var direction = new FlxPoint(length, 0).rotateByDegrees(angle);
 		var position = parent.player.getGraphicMidpoint().addPoint(direction);
 		var enemy:Enemy;
 
-		switch (enemyType.toLowerCase()) {
+		switch (info.enemy.toLowerCase()) {
 			case "devil":
-				enemy = new Devil(position.x, position.y, "steak");
+				enemy = new Devil(position.x, position.y, "steak", info);
 			default:
 				return;
 		}

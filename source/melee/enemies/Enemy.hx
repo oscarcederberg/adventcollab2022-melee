@@ -23,6 +23,7 @@ abstract class Enemy extends FlxSprite {
 	public var damage:Float;
 	public var itemToDrop:String;
 
+	var spawnInfo:SpawnInfo;
 	var moveSpeed:Float;
 	var wiggleDuration:Float;
 	var bounceDuration:Float;
@@ -31,9 +32,10 @@ abstract class Enemy extends FlxSprite {
 
 	var state:PlayState;
 
-	public function new(x:Float, y:Float, itemToDrop:String) {
+	public function new(x:Float, y:Float, itemToDrop:String, spawnInfo:SpawnInfo) {
 		super(x, y);
 		this.itemToDrop = itemToDrop;
+		this.spawnInfo = spawnInfo;
 
 		this.state = cast(Global.state, PlayState);
 		this.currentState = IDLE;
@@ -82,6 +84,10 @@ abstract class Enemy extends FlxSprite {
 			var point:FlxPoint = getGraphicMidpoint();
 			point.add(-4, height / 2 - 4); // NOTE: hardocded. 4 = (item.width / 2)
 			this.state.spawnItem(point.x, point.y, itemToDrop);
+		}
+
+		if (spawnInfo != null) {
+			spawnInfo.count--;
 		}
 
 		kill();

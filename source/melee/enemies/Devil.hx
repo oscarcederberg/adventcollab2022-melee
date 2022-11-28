@@ -4,8 +4,8 @@ import flixel.tweens.FlxEase;
 import flixel.tweens.FlxTween;
 
 class Devil extends Enemy {
-	public function new(x:Float, y:Float, itemToDrop:String) {
-		super(x, y, itemToDrop);
+	public function new(x:Float, y:Float, itemToDrop:String, info:SpawnInfo) {
+		super(x, y, itemToDrop, info);
 
 		this.health = 10;
 		this.damage = 5;

@@ -26,7 +26,8 @@ class PlayState extends FlxState {
 
 	var time:Float;
 	var timerText:FlxText;
-	var tick:Float = 0;
+
+	public var tick:Float = 0;
 
 	// This is the Start function
 	override function create() {
