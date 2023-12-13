@@ -8,7 +8,7 @@ class Main extends openfl.display.Sprite
 	public function new()
 	{
 		super();
-		addChild(new FlxGame(480, 270, BootState));
+		addChild(new FlxGame(480, 270, BootState, 60, 60, true));
 	}
 }
 
@@ -26,6 +26,6 @@ class BootState extends flixel.FlxState
 	{
 		super.update(elapsed);
 
-		Global.switchState(new melee.states.MenuState());
+		Global.switchState(new melee.states.PlayState());
 	}
 }
